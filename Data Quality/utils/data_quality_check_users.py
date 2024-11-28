@@ -2,7 +2,27 @@ import json
 import pandas as pd
 
 class DataQuality_Users:
-    """Class to perform data quality checks on a JSON dataset."""
+    """
+    This class is designed to make data quality checks on user data easy and straightforward.
+
+    Here’s what it does:
+
+    - **__init__(file_path)**: Loads your JSON data and gets the class ready to work.
+    - **transform_data(id_field, created_date_field, last_login_field)**: Cleans up key fields like user IDs and dates, making them consistent and easier to use.
+    - **get_data_info()**: Gives you a quick summary of your dataset, including the number of rows and column names.
+    - **check_missing_values(key_field)**: Finds any missing values in the dataset and gives details on where they occur.
+    - **check_invalid_dates(created_date_field, last_login_field,e.g. key_field)**: Looks at date relationships to make sure they make sense (like last login happening after the account creation date) and checks for dates that are set in the future.
+    - **check_duplicates()**: Identifies duplicate rows in the data.
+    - **check_primary_key_duplicates(key_field)**: Checks for duplicate user IDs or any other primary key you specify.
+    - **drop_duplicates()**: Cleans up duplicate rows from the dataset.
+    - **get_cleaned_data()**: Returns the cleaned dataset after running all the set checks.
+    - **show_data()**: Shows you a sample of the data so you can get a feel for its structure.
+    - **display_summary()**: Wraps everything up in a clear, easy-to-read summary of all the data quality checks you’ve run.
+
+    This class is built to save you time and give you confidence in the quality of your user data.
+    """
+
+
     
     def __init__(self, file_path):
         # 1. Load the Data

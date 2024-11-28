@@ -1,7 +1,25 @@
 import pandas as pd
 
 class ReceiptsDataQualityChecker:
-    """Class to perform data quality checks on receipts data."""
+    """
+This class is designed to help you perform data quality checks on receipts data. 
+
+Here's what you can do with it:
+
+- **__init__(file_path)**: Load your JSON data and initialize the class.
+- **flatten_nested_fields()**: Simplify nested fields like '_id' and date fields for easier processing.
+- **get_data_info()**: Get a quick overview of your dataset, including column names and row count.
+- **check_missing_values(key_field)**: Identify any missing values in your dataset.
+- **check_invalid_dates(date_fields, key_field)**: Ensure date consistency and flag invalid or future dates.
+- **check_duplicates()**: Detect duplicate rows in the dataset.
+- **check_primary_key_duplicates(key_field)**: Check for duplicate entries in the primary key column.
+- **drop_duplicates()**: Remove duplicate rows to clean up the dataset.
+- **get_cleaned_data()**: Retrieve the cleaned and processed DataFrame.
+- **show_data()**: Preview a sample of the dataset.
+- **display_summary()**: Generate a summary report of all data quality checks.
+
+This makes it easy to explore, clean, and validate your receipts data!
+"""
 
     def __init__(self, file_path):
         """

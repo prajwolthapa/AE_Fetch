@@ -26,9 +26,11 @@ class ReceiptsDataQualityChecker:
             if field in self.df.columns:
                 self.df[field] = self.df[field].apply(lambda x: pd.to_datetime(x['$date'], unit='ms') if isinstance(x, dict) else None)
 
-        # Expand `rewardsReceiptItemList` into a separate DataFrame if necessary
+        # Convert lists in `rewardsReceiptItemList` to string representations to avoid unhashable errors
         if 'rewardsReceiptItemList' in self.df.columns:
-            self.df['rewardsReceiptItemCount'] = self.df['rewardsReceiptItemList'].apply(lambda x: len(x) if isinstance(x, list) else 0)
+            self.df['rewardsReceiptItemList'] = self.df['rewardsReceiptItemList'].apply(
+                lambda x: str(x) if isinstance(x, list) else x
+            )
 
     def get_data_info(self):
         """
@@ -107,18 +109,18 @@ class ReceiptsDataQualityChecker:
     def check_rewards_receipt_item_consistency(self):
         """
         Check for consistency in `rewardsReceiptItemList` structure.
-        Ensures that each entry is a valid list and the item count matches `rewardsReceiptItemCount`.
+        Ensures that each entry is a valid list and the item count matches `purchasedItemCount`.
         """
-        if 'rewardsReceiptItemList' in self.df.columns:
+        if 'rewardsReceiptItemList' in self.df.columns and 'purchasedItemCount' in self.df.columns:
             inconsistent_rows = self.df[
-                self.df['rewardsReceiptItemList'].apply(lambda x: not isinstance(x, list)) |
-                (self.df['rewardsReceiptItemCount'] != self.df['purchasedItemCount'])
+                self.df['rewardsReceiptItemList'].apply(lambda x: not isinstance(eval(x), list) if isinstance(x, str) else True) |
+                (self.df['rewardsReceiptItemList'].apply(lambda x: len(eval(x)) if isinstance(x, str) else 0) != self.df['purchasedItemCount'])
             ]
             return {
                 "inconsistent_count": len(inconsistent_rows),
                 "inconsistent_rows": inconsistent_rows if not inconsistent_rows.empty else "No inconsistencies found"
             }
-        return "Field 'rewardsReceiptItemList' not found in the dataset."
+        return "Fields 'rewardsReceiptItemList' or 'purchasedItemCount' not found in the dataset."
 
     def drop_duplicates(self):
         """
